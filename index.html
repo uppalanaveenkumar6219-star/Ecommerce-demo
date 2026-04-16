@@ -44,12 +44,10 @@ button { padding:8px; margin-top:5px; border:none; border-radius:5px; cursor:poi
 // =======================
 window.dataLayer = window.dataLayer || [];
 
-/* ✅ FINAL FIXED FUNCTION */
 function pushDL(obj){
   window.dataLayer.push(obj);
   console.log("🔥 DL:", obj);
 
-  /* 🔥 ADOBE TRIGGER (CRITICAL) */
   if (obj.event) {
     try {
       _satellite.track(obj.event);
@@ -131,7 +129,7 @@ function viewProduct(id){
 }
 
 // =======================
-// 🛒 ADD TO CART
+// 🛒 ADD TO CART (FINAL FIX)
 // =======================
 function addToCart(){
   cart.push(currentProduct);
@@ -140,6 +138,7 @@ function addToCart(){
   pushDL({
     event: "add_to_cart",
     product_name: currentProduct.name,
+    category: currentProduct.category,   // ✅ CRITICAL FIX
     price: currentProduct.price
   });
 
@@ -152,7 +151,9 @@ function addToCart(){
 function checkout(){
   pushDL({
     event: "checkout",
-    cart_size: cart.length
+    cart_size: cart.length,
+    product_names: cart.map(p => p.name).join(", "),
+    category: cart.length > 0 ? cart[0].category : ""
   });
 
   alert("Checkout started with " + cart.length + " items");
@@ -174,7 +175,8 @@ function purchase(){
     event: "purchase",
     revenue: total,
     items: cart.length,
-    product_names: names
+    product_names: names,
+    category: cart.length > 0 ? cart[0].category : ""
   });
 
   document.getElementById("app").innerHTML = `
